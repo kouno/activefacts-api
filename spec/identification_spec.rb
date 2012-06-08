@@ -238,7 +238,7 @@ describe "An Entity Type" do
 
       it "should assert the identifying values" do
         @rn.should be_a(Mod::Number)
-        @c.Number[@rn].should == @rn    # Yes
+        @c.Number[@rn.to_value].should == @rn    # Yes
         @c.Number[101].should == @rn    # No
         @c.Number[101].should be_eql 101    # No
       end
