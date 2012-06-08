@@ -51,6 +51,38 @@ class Module #:nodoc:
   end
 end
 
+class TrueClass #:nodoc:
+  def verbalise(role_name = nil); role_name ? "#{role_name}: true" : "true"; end
+  def identifying_role_values; self; end
+  def self.identifying_role_values(*a); true; end
+end
+
+class FalseClass #:nodoc:
+  def verbalise(role_name = nil); role_name ? "#{role_name}: false" : "false"; end
+  def identifying_role_values; self; end
+  def self.identifying_role_values(*a); false; end
+end
+
+class NilClass #:nodoc:
+  def verbalise; "nil"; end
+  def identifying_role_values; self; end
+  def self.identifying_role_values(*a); nil; end
+end
+
+class Class
+  # Make this Class into a ObjectType and if necessary its module into a Vocabulary.
+  # The parameters are the names (Symbols) of the identifying roles.
+  def identified_by *args, &b
+    raise "#{basename} is not an entity type" if respond_to? :value_type  # Don't make a ValueType into an EntityType
+    include ActiveFacts::API::Entity
+    identified_by(*args, &b)
+  end
+
+  def is_entity_type
+    respond_to?(:identifying_role_names)
+  end
+end
+
 module ActiveFacts #:nodoc:
   # If the args array ends with a hash, remove it.
   # If the remaining args are fewer than the arg_names,
